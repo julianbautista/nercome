@@ -25,7 +25,7 @@ def get_nercome_covariance(x, s, ndraws=500):
         #-- Randomly divide all realisations in two batches
         choice = np.random.choice(idx, size=s, replace=False)
         selection_1 = np.in1d(idx, choice)
-        selection_2 = ~sel1
+        selection_2 = ~selection_1
         x1 = x[selection_1]
         x2 = x[selection_2]
         #-- Estimate sample covariance matrices of the two samples
@@ -39,6 +39,7 @@ def get_nercome_covariance(x, s, ndraws=500):
         mid_matrix = eigvects_1.T @ cov_sample_2 @ eigvects_1
         #-- make it a diagonal matrix
         mid_matrix_diag = np.diag(np.diag(mid_matrix))
+        #-- now compute Z = U_1 diag( U_1^T S_2 U_1 ) U_1^T
         cov_nercome += eigvects_1 @ mid_matrix_diag @ eigvects_1.T
     cov_nercome /= ndraws
     return cov_nercome
